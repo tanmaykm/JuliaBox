@@ -15,7 +15,8 @@ from jbox_tasks import JBoxAsyncJob
 from jbox_util import read_config, LoggerMixin
 from vol import VolMgr
 from jbox_container import JBoxContainer
-from handlers import JBoxHandler, AdminHandler, MainHandler, AuthHandler, PingHandler, CorsHandler, HomeworkHandler
+from handlers import JBoxHandler, AdminHandler, MainHandler, AuthHandler, PingHandler, CorsHandler, \
+    HomeworkHandler, APIManagement
 
 
 class JBox(LoggerMixin):
@@ -57,7 +58,8 @@ class JBox(LoggerMixin):
             (r"/hostadmin/", AdminHandler),
             (r"/ping/", PingHandler),
             (r"/cors/", CorsHandler),
-            (r"/hw/", HomeworkHandler)
+            (r"/hw/", HomeworkHandler),
+            (r"/jbapi/", APIManagement)
         ])
         cookie_secret = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
         self.application.settings["cookie_secret"] = cookie_secret
