@@ -1,8 +1,9 @@
 import datetime
 import pytz
 import json
+
 from cloud.aws import CloudHost
-from jbox_util import unquote
+from utils.jbox_util import unquote
 from handlers.handler_base import JBoxHandler
 from jbox_container import JBoxContainer
 from db import JBoxUserV2, JBoxCourseHomework, JBoxDynConfig

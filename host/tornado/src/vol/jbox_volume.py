@@ -5,12 +5,11 @@ import stat
 import datetime
 import errno
 import json
-
 import pytz
-from cloud.aws import CloudHost
 
-from jbox_util import LoggerMixin, unique_sessname, ensure_delete, esc_sessname, get_user_name, parse_iso_time
-from jbox_crypto import ssh_keygen
+from cloud.aws import CloudHost
+from utils.jbox_util import LoggerMixin, unique_sessname, ensure_delete, esc_sessname, get_user_name, parse_iso_time
+from utils.jbox_crypto import ssh_keygen
 
 
 class JBoxVol(LoggerMixin):

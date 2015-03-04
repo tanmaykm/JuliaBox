@@ -3,12 +3,15 @@
 import os
 import sys
 import shutil
+
+import docker
+
 import db
 from db import JBoxDynConfig
-from jbox_util import read_config, LoggerMixin
-import docker
+from utils.jbox_util import read_config, LoggerMixin
 from cloud.aws import CloudHost
 from vol import VolMgr, JBoxVol
+
 
 if __name__ == "__main__":
     dckr = docker.Client()

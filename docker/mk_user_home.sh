@@ -15,7 +15,7 @@ mkdir -p ${JUSER_HOME}
 mkdir -p ${JUSER_HOME}/.juliabox
 mkdir -p ${JUSER_HOME}/.juliabox/jimg
 
-cp ${DIR}/setup_julia.sh ${JUSER_HOME}
+cp ${DIR}/api/setup_julia.sh ${JUSER_HOME}
 cp ${DIR}/build_sysimg.jl ${JUSER_HOME}
 cp ${DIR}/jimg.jl ${JUSER_HOME}
 cp ${DIR}/mkjimg.jl ${JUSER_HOME}

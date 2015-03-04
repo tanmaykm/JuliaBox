@@ -5,11 +5,11 @@ import multiprocessing
 import random
 
 import psutil
-from cloud.aws import CloudHost
 
+from cloud.aws import CloudHost
 from db import JBoxAccountingV2
 from jbox_tasks import JBoxAsyncJob
-from jbox_util import LoggerMixin, parse_iso_time
+from utils.jbox_util import LoggerMixin, parse_iso_time
 from vol import VolMgr
 
 

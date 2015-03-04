@@ -1,7 +1,8 @@
 import zmq
 import json
-from jbox_util import LoggerMixin
-from jbox_crypto import signstr
+
+from utils.jbox_util import LoggerMixin
+from utils.jbox_crypto import signstr
 from cloud.aws import CloudHost
 
 

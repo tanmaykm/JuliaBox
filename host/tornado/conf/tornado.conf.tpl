@@ -6,8 +6,7 @@
     "jbox_log_level": 10,
     "root_log_level": 40,
     "gauth" : $$GAUTH,
-    "invite_only" : $$INVITE,
-    
+
     # Number of active containers to allow per instance
     "numlocalmax" : $$NUM_LOCALMAX,
     # Number of disks available to be mounted to images

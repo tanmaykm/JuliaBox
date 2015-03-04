@@ -7,12 +7,12 @@ import tornado.ioloop
 import tornado.web
 import tornado.auth
 import docker
-from cloud.aws import CloudHost
 
+from cloud.aws import CloudHost
 import db
 from db import JBoxDynConfig, JBoxUserV2, is_cluster_leader, is_proposed_cluster_leader
 from jbox_tasks import JBoxAsyncJob
-from jbox_util import read_config, LoggerMixin
+from utils.jbox_util import read_config, LoggerMixin
 from vol import VolMgr
 from jbox_container import JBoxContainer
 from handlers import JBoxHandler, AdminHandler, MainHandler, AuthHandler, PingHandler, CorsHandler, \

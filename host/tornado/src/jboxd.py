@@ -7,12 +7,12 @@ import datetime
 import pytz
 
 import docker
-from cloud.aws import CloudHost
 
+from cloud.aws import CloudHost
 import db
 from db import JBoxUserV2, JBoxDynConfig, JBoxDiskState, JBoxSessionProps
 from jbox_tasks import JBoxAsyncJob
-from jbox_util import LoggerMixin, read_config, retry, unique_sessname
+from utils.jbox_util import LoggerMixin, read_config, retry, unique_sessname
 from jbox_container import JBoxContainer
 from vol import VolMgr, JBoxLoopbackVol
 

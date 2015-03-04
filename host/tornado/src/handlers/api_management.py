@@ -1,5 +1,6 @@
 import json
-from jbox_util import unquote
+
+from utils.jbox_util import unquote
 from handlers.handler_base import JBoxHandler
 from db import JBoxUserV2, JBoxAPISpec
 

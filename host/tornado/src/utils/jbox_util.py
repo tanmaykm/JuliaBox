@@ -74,21 +74,59 @@ def unique_sessname(s):
     return '_'.join([name, hashdigest])
 
 
-def read_config():
-    with open("conf/tornado.conf") as f:
+NEXT_CONTAINER_ID = 1
+CONTAINER_NAME_SEP = '_'
+
+
+def unique_container_name(api_name):
+    global NEXT_CONTAINER_ID
+    nid = str(NEXT_CONTAINER_ID) + CONTAINER_NAME_SEP + str(time.time())
+    if NEXT_CONTAINER_ID >= sys.maxint:
+        NEXT_CONTAINER_ID = 1
+    else:
+        NEXT_CONTAINER_ID += 1
+
+    return continer_name_prefix(api_name) + hashlib.sha1(nid).hexdigest()
+
+
+def continer_name_prefix(api_name):
+    return 'api' + CONTAINER_NAME_SEP + api_name + CONTAINER_NAME_SEP
+
+
+def get_api_name_from_container_name(container_name):
+    parts = container_name.split(CONTAINER_NAME_SEP)
+    if (len(parts) >= 3) and (parts[0] == 'api') and (len(parts[-1]) == 32):
+        parts.pop(0)
+        parts.pop()
+        return CONTAINER_NAME_SEP.join(parts)
+    return None
+
+
+def _read_config(master_cfg, user_cfg):
+    with open(master_cfg) as f:
         cfg = eval(f.read())
 
-    def update_config(base_cfg, add_cfg):
+    def _update_config(base_cfg, add_cfg):
         for n, v in add_cfg.iteritems():
             if (n in base_cfg) and isinstance(base_cfg[n], dict):
-                update_config(base_cfg[n], v)
+                _update_config(base_cfg[n], v)
             else:
                 base_cfg[n] = v
 
-    if os.path.isfile("conf/jbox.user"):
-        with open("conf/jbox.user") as f:
+    if os.path.isfile(user_cfg):
+        with open(user_cfg) as f:
             ucfg = eval(f.read())
-        update_config(cfg, ucfg)
+        _update_config(cfg, ucfg)
+
+    return cfg
+
+
+def read_api_config():
+    return _read_config("conf/jbapi_tornado.conf", "conf/jbox.user")
+
+
+def read_config():
+    cfg = _read_config("conf/tornado.conf", "conf/jbox.user")
 
     cfg["admin_sessnames"] = []
     for ad in cfg["admin_users"]:
@@ -150,6 +188,13 @@ def unquote(s):
         return s[1:-1]
     else:
         return s
+
+
+def get_local_interface_ip():
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('8.8.8.8', 0))
+    return s.getsockname()[0]
 
 
 class LoggerMixin(object):

@@ -1,15 +1,14 @@
-from boto.dynamodb2.fields import HashKey
-from boto.dynamodb2.types import STRING
-
 import json
 import datetime
-import isodate
 import pytz
 
+from boto.dynamodb2.fields import HashKey
+from boto.dynamodb2.types import STRING
+import isodate
 import boto.dynamodb2.exceptions
 
 from db.db_base import JBoxDB
-from jbox_util import parse_iso_time
+from utils.jbox_util import parse_iso_time
 
 
 class JBoxDynConfig(JBoxDB):

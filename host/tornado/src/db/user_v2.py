@@ -1,12 +1,12 @@
-from boto.dynamodb2.fields import HashKey, RangeKey, GlobalKeysOnlyIndex
-from boto.dynamodb2.types import NUMBER, STRING
-
-import boto.dynamodb2.exceptions
 import datetime
 import pytz
 import json
-from jbox_crypto import encrypt, decrypt
 
+from boto.dynamodb2.fields import HashKey, RangeKey, GlobalKeysOnlyIndex
+from boto.dynamodb2.types import NUMBER, STRING
+import boto.dynamodb2.exceptions
+
+from utils.jbox_crypto import encrypt, decrypt
 from db.db_base import JBoxDB
 
 

@@ -5,9 +5,8 @@ import httplib2
 from oauth2client.client import OAuth2Credentials
 
 from handlers.handler_base import JBoxHandler
-
-from jbox_util import unique_sessname
-from jbox_crypto import signstr
+from utils.jbox_util import unique_sessname
+from utils.jbox_crypto import signstr
 from db.user_v2 import JBoxUserV2
 from jbox_container import JBoxContainer
 

@@ -1,9 +1,10 @@
 import json
 import base64
-import tornado.escape
-from cloud.aws import CloudHost
 
-from jbox_crypto import encrypt, decrypt
+import tornado.escape
+
+from cloud.aws import CloudHost
+from utils.jbox_crypto import encrypt, decrypt
 from handlers.handler_base import JBoxHandler
 
 

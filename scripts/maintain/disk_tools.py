@@ -4,13 +4,13 @@ __author__ = 'tan'
 import sys
 import os
 import tarfile
-import docker
 import datetime
 import pytz
 
-from cloud.aws import CloudHost
+import docker
 
-from jbox_util import LoggerMixin, unique_sessname, read_config
+from cloud.aws import CloudHost
+from utils.jbox_util import LoggerMixin, unique_sessname, read_config
 from vol import JBoxVol, VolMgr
 
 

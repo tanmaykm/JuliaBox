@@ -8,7 +8,6 @@ source ${DIR}/../jboxcommon.sh
 
 DOCKER_IMAGE=juliabox/juliabox
 OPT_GOOGLE=0
-OPT_INVITE=0
 NUM_LOCALMAX=2
 NUM_DISKSMAX=2
 EXPIRE=0
@@ -23,7 +22,6 @@ function usage {
   echo ' -n  <num>      : Maximum number of active containers. Default 2.'
   echo ' -v  <num>      : Maximum number of mountable volumes. Default 2.'
   echo ' -t  <seconds>  : Auto delete containers older than specified seconds. 0 means never expire. Default 0.'
-  echo ' -i             : Install in an invite only mode.'
   echo
   echo 'Post setup, additional configuration parameters may be set in jbox.user '
   echo 'Please see README.md (https://github.com/JuliaLang/JuliaBox) for more details '
@@ -40,7 +38,6 @@ function gen_sesskey {
 function configure_resty_tornado {
     echo "Setting up nginx.conf ..."
     sed  s/\$\$NGINX_USER/$USER/g $NGINX_CONF_DIR/nginx.conf.tpl > $NGINX_CONF_DIR/nginx.conf
-    sed  -i s/\$\$ADMIN_KEY/$1/g $NGINX_CONF_DIR/nginx.conf
 
     sed  -i s/\$\$SESSKEY/$SESSKEY/g $NGINX_CONF_DIR/nginx.conf 
     sed  s/\$\$SESSKEY/$SESSKEY/g $TORNADO_CONF_DIR/tornado.conf.tpl > $TORNADO_CONF_DIR/tornado.conf
@@ -49,11 +46,6 @@ function configure_resty_tornado {
         sed  -i s/\$\$GAUTH/True/g $TORNADO_CONF_DIR/tornado.conf
     else
         sed  -i s/\$\$GAUTH/False/g $TORNADO_CONF_DIR/tornado.conf
-    fi
-    if test $OPT_INVITE -eq 1; then
-        sed  -i s/\$\$INVITE/True/g $TORNADO_CONF_DIR/tornado.conf
-    else
-        sed  -i s/\$\$INVITE/False/g $TORNADO_CONF_DIR/tornado.conf
     fi
 
     sed  -i s/\$\$ADMIN_USER/$ADMIN_USER/g $TORNADO_CONF_DIR/tornado.conf
@@ -68,7 +60,7 @@ function configure_resty_tornado {
 }
 
 
-while getopts  "u:idgn:v:t:k:s:" FLAG
+while getopts  "u:dgn:v:t:k:s:" FLAG
 do
   if test $FLAG == '?'
      then
@@ -81,10 +73,6 @@ do
   elif test $FLAG == 'g'
      then
         OPT_GOOGLE=1
-
-  elif test $FLAG == 'i'
-     then
-        OPT_INVITE=1
 
   elif test $FLAG == 'n'
      then

@@ -1,9 +1,10 @@
 import datetime
 import pytz
+
 from boto.dynamodb2.table import Table
 
 from cloud.aws import CloudHost
-from jbox_util import LoggerMixin
+from utils.jbox_util import LoggerMixin
 
 
 class JBoxDB(LoggerMixin):

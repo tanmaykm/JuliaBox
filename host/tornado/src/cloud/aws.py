@@ -4,6 +4,8 @@ import pytz
 import stat
 import sys
 import traceback
+import time
+
 import boto.ec2
 import boto.ec2.cloudwatch
 import boto.ec2.autoscale
@@ -13,9 +15,8 @@ from boto.s3.key import Key
 import boto.utils
 import psutil
 import sh
-import time
 
-from jbox_util import LoggerMixin, parse_iso_time, retry
+from utils.jbox_util import LoggerMixin, parse_iso_time, retry
 
 
 class CloudHost(LoggerMixin):

@@ -3,7 +3,7 @@ import datetime
 import errno
 import pytz
 
-from jbox_util import make_sure_path_exists, LoggerMixin, unique_sessname
+from utils.jbox_util import make_sure_path_exists, LoggerMixin, unique_sessname
 from db import JBoxUserV2, JBoxDynConfig
 from jbox_volume import JBoxVol
 from loopback import JBoxLoopbackVol

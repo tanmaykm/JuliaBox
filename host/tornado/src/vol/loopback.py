@@ -2,7 +2,7 @@ import os
 import threading
 import time
 
-from jbox_util import ensure_delete
+from utils.jbox_util import ensure_delete
 from jbox_volume import JBoxVol
 
 

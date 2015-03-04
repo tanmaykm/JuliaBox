@@ -1,13 +1,12 @@
 from datetime import datetime, timedelta
 
 import isodate
-import json
-from cloud.aws import CloudHost
 
-from jbox_util import unquote
+from cloud.aws import CloudHost
+from utils.jbox_util import unquote
 from handlers.handler_base import JBoxHandler
 from jbox_container import JBoxContainer
-from db import JBoxUserV2, JBoxDynConfig, JBoxAccountingV2, JBoxInvite
+from db import JBoxUserV2, JBoxDynConfig, JBoxAccountingV2
 
 
 class AdminHandler(JBoxHandler):

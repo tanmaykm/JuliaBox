@@ -1,11 +1,10 @@
-
 import os
 import threading
 import time
-from cloud.aws import CloudHost
 
+from cloud.aws import CloudHost
 from db import JBoxSessionProps, JBoxDiskState
-from jbox_util import unique_sessname
+from utils.jbox_util import unique_sessname
 from jbox_volume import JBoxVol
 
 
