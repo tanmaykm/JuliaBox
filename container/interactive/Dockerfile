@@ -1,5 +1,5 @@
 # Docker file for JuliaBox
-# Version:41
+# Version:42
 
 FROM julialang/juliaboxpkgdist:v0.3.12
 # Switching the base to the bare julia image helps during JuliaBox development by reducing image size
@@ -48,9 +48,52 @@ RUN mkdir /mnt/data
 
 RUN echo "ulimit -u 2048 -n 256" >> /etc/bash.bashrc
 
+# Install CUDA
+LABEL com.nvidia.volumes.needed="nvidia_driver"
+
+ENV NVIDIA_GPGKEY_SUM bd841d59a27a406e513db7d405550894188a4c1cd96bf8aa4f82f1b39e0b5c1c
+ENV NVIDIA_GPGKEY_FPR 889bee522da690103c4b085ed88c3d385c37d3be
+
+RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/GPGKEY && \
+    apt-key adv --export --no-emit-version -a $NVIDIA_GPGKEY_FPR | tail -n +2 > cudasign.pub && \
+    echo "$NVIDIA_GPGKEY_SUM  cudasign.pub" | sha256sum -c --strict - && rm cudasign.pub && \
+    echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1404/x86_64 /" > /etc/apt/sources.list.d/cuda.list
+
+ENV CUDA_VERSION 7.5
+LABEL com.nvidia.cuda.version="7.5"
+
+ENV CUDA_PKG_VERSION 7-5=7.5-18
+RUN apt-get update && apt-get install -y --no-install-recommends --force-yes \
+        cuda-nvrtc-$CUDA_PKG_VERSION \
+        cuda-cusolver-$CUDA_PKG_VERSION \
+        cuda-cublas-$CUDA_PKG_VERSION \
+        cuda-cufft-$CUDA_PKG_VERSION \
+        cuda-curand-$CUDA_PKG_VERSION \
+        cuda-cusparse-$CUDA_PKG_VERSION \
+        cuda-npp-$CUDA_PKG_VERSION \
+        cuda-cudart-$CUDA_PKG_VERSION && \
+    ln -s cuda-$CUDA_VERSION /usr/local/cuda && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN wget -O /tmp/cuda.run http://developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda_7.5.18_linux.run && \
+    sh /tmp/cuda.run --silent --toolkit && \
+    rm -f /tmp/cuda.run
+
+RUN echo "/usr/local/cuda/lib" >> /etc/ld.so.conf.d/cuda.conf && \
+    echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/cuda.conf && \
+    echo "/usr/local/cuda/nvvm/lib64" >> /etc/ld.so.conf.d/cuda.conf && \
+    ldconfig
+
+RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
+    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
+
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib:/usr/local/cuda/lib64:/usr/local/cuda/nvvm/lib64
+ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/texlive/2014/bin/x86_64-linux:/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin:/opt/julia/bin
+
 USER juser
 ENV HOME /home/juser
-ENV PATH /usr/local/texlive/2014/bin/x86_64-linux:/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin:/opt/julia/bin
+ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/texlive/2014/bin/x86_64-linux:/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin:/opt/julia/bin
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib:/usr/local/cuda/lib64:/usr/local/cuda/nvvm/lib64
 WORKDIR /home/juser
 
 # 4200: http port for console

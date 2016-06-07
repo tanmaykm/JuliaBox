@@ -59,6 +59,19 @@
         "ulimits" : { "nofile": 1024 }
     },
 
+    # gpu configuration (applies to both api and interactive containers)
+    # Note: need additional tag to identify gpu enabled host, once JuliaBox gets ability to launch container based on host capability
+    "gpu": {
+        "enabled" : False,
+        "devices" : ["/dev/nvidia0", "/dev/nvidiactl", "/dev/nvidia-uvm"],
+        "driver_volume" : {
+            "nvidia_driver_352.93": {
+                "bind": "/usr/local/nvidia",
+                "ro": True
+            }
+        }
+    },
+
     # if using Google auth, the API key and secret to use
     "google_oauth": {
         "key": "",

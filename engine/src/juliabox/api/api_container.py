@@ -7,7 +7,7 @@ import pytz
 import docker.utils
 from docker.utils import Ulimit
 
-from juliabox.jbox_container import BaseContainer
+from juliabox.jbox_container import BaseContainer, GPUMount
 from juliabox.jbox_util import JBoxCfg
 from juliabox.jbox_tasks import JBoxAsyncJob
 from juliabox.cloud import Compute
@@ -25,6 +25,7 @@ class APIContainer(BaseContainer):
     CPU_LIMIT = 1024
     MEM_LIMIT = None
     ULIMITS = None
+    VOLUMES = []
 
     EXPIRE_SECS = 0
     MAX_CONTAINERS = 0
@@ -40,6 +41,9 @@ class APIContainer(BaseContainer):
 
     @staticmethod
     def configure():
+        GPUMount.configure()
+        GPUMount.setup_volume_mount_point(APIContainer.VOLUMES)
+
         BaseContainer.DCKR = JBoxCfg.dckr
         APIContainer.DCKR_IMAGE = JBoxCfg.get('api.docker_image')
         APIContainer.MEM_LIMIT = JBoxCfg.get('api.mem_limit')
@@ -102,11 +106,13 @@ class APIContainer(BaseContainer):
             image_name = APIContainer.DCKR_IMAGE
 
         hostcfg = docker.utils.create_host_config(mem_limit=APIContainer.MEM_LIMIT)
+        GPUMount.setup_host_config(hostcfg)
 
         jsonobj = APIContainer.DCKR.create_container(image_name,
                                                      detach=True,
                                                      host_config=hostcfg,
                                                      cpu_shares=APIContainer.CPU_LIMIT,
+                                                     volumes=APIContainer.VOLUMES,
                                                      environment=env,
                                                      hostname='juliabox',
                                                      name=container_name)

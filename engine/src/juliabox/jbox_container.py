@@ -1,8 +1,9 @@
 __author__ = 'tan'
 import multiprocessing
 import psutil
+from docker.utils.utils import parse_devices, convert_volume_binds
 
-from jbox_util import LoggerMixin, parse_iso_time
+from jbox_util import LoggerMixin, parse_iso_time, JBoxCfg
 from juliabox.db import JBPluginDB
 
 
@@ -209,3 +210,34 @@ class BaseContainer(LoggerMixin):
         plugin = JBPluginDB.jbox_get_plugin(JBPluginDB.JBP_USAGE_ACCOUNTING)
         if plugin is not None:
             plugin.record_session_time(self.get_name(), self.get_image_names(), self.time_created(), self.time_finished())
+
+
+class GPUMount(LoggerMixin):
+    DEVICES = []
+    DRIVER_VOLUME = {}
+    ENABLED = False
+
+    @staticmethod
+    def configure():
+        GPUMount.ENABLED = JBoxCfg.get('gpu.enabled', False)
+        if GPUMount.ENABLED:
+            GPUMount.DEVICES = JBoxCfg.get('gpu.devices', [])
+            GPUMount.DRIVER_VOLUME = JBoxCfg.get('gpu.driver_volume', {})
+
+    @staticmethod
+    def is_enabled():
+        return GPUMount.ENABLED
+
+    @staticmethod
+    def setup_host_config(host_config):
+        if GPUMount.ENABLED:
+            host_config['Devices'] = parse_devices(GPUMount.DEVICES)
+            host_config['Binds'].extend(convert_volume_binds(GPUMount.DRIVER_VOLUME))
+
+    @staticmethod
+    def setup_volume_mount_point(vols):
+        if GPUMount.ENABLED:
+            for v in convert_volume_binds(GPUMount.DRIVER_VOLUME):
+                contv = v.split(':')[1]
+                if contv not in vols:
+                    vols.append(contv)

@@ -4,7 +4,7 @@ import pytz
 from juliabox.cloud import Compute
 from juliabox.jbox_tasks import JBoxAsyncJob
 from juliabox.jbox_util import JBoxCfg
-from juliabox.jbox_container import BaseContainer
+from juliabox.jbox_container import BaseContainer, GPUMount
 from juliabox.vol import VolMgr, JBoxVol
 import docker.utils
 from docker.utils import Ulimit
@@ -41,6 +41,9 @@ class SessContainer(BaseContainer):
 
     @staticmethod
     def configure():
+        GPUMount.configure()
+        GPUMount.setup_volume_mount_point(SessContainer.VOLUMES)
+
         BaseContainer.DCKR = JBoxCfg.dckr
         SessContainer.DCKR_IMAGE = JBoxCfg.get('interactive.docker_image')
         SessContainer.MEM_LIMIT = JBoxCfg.get('interactive.mem_limit')
@@ -52,6 +55,7 @@ class SessContainer(BaseContainer):
 
         SessContainer.CPU_LIMIT = JBoxCfg.get('interactive.cpu_limit')
         SessContainer.MAX_CONTAINERS = JBoxCfg.get('interactive.numlocalmax')
+
 
     @staticmethod
     def _create_new(name, email):
@@ -74,6 +78,7 @@ class SessContainer(BaseContainer):
                                                   port_bindings=port_bindings,
                                                   mem_limit=SessContainer.MEM_LIMIT,
                                                   ulimits=SessContainer.ULIMITS)
+        GPUMount.setup_host_config(hostcfg)
         jsonobj = BaseContainer.DCKR.create_container(SessContainer.DCKR_IMAGE,
                                                           detach=True,
                                                           host_config=hostcfg,
