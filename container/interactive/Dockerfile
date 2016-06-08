@@ -90,6 +90,11 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib:/usr/local/cuda/lib64:/usr/local/cuda/nvvm/lib64
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/texlive/2014/bin/x86_64-linux:/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin:/opt/julia/bin
 
+# Install ArrayFire
+RUN wget -O /tmp/af.sh http://ci.arrayfire.org/userContent/Linux/ArrayFire-no-gl-v3.3.2_Linux_x86_64.sh && \
+    sh /tmp/af.sh --skip-license --prefix=/usr/local && \
+    rm -f /tmp/af.sh
+
 USER juser
 ENV HOME /home/juser
 ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/texlive/2014/bin/x86_64-linux:/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin:/opt/julia/bin
