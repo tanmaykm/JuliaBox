@@ -120,6 +120,7 @@ class JBoxd(LoggerMixin):
         cont.stop()
         cont.delete(backup=True)
         JBoxSessionProps.detach_instance(cont.get_name(), Compute.get_instance_id())
+        JBoxd.publish_perf_counters()
         JBoxd.publish_anticipated_load()
 
     @staticmethod

@@ -62,7 +62,7 @@ class JBoxSessionProps(JBoxDB):
 
     def get_instance_id(self):
         now = datetime.datetime.now(pytz.utc)
-        attach_time = JBoxSessionProps.epoch_secs_to_datetime(self.get_attrib('attach_time', 0))
+        attach_time = JBoxSessionProps.epoch_secs_to_datetime(int(self.get_attrib('attach_time', 0)))
         if (now - attach_time).total_seconds() > JBoxSessionProps.SESS_UPDATE_INTERVAL:
             return None
         return self.get_attrib('instance_id')
@@ -116,7 +116,7 @@ class JBoxSessionProps(JBoxDB):
         nowsecs = JBoxSessionProps.datetime_to_epoch_secs(now)
         valid_time = nowsecs - JBoxSessionProps.SESS_UPDATE_INTERVAL
         result = dict()
-        for record in JBoxSessionProps.scan(attach_time__gte=valid_time, instance_id_gt=""):
+        for record in JBoxSessionProps.scan(attach_time__gte=valid_time, instance_id__gt=" "):
             instance_id = record.get('instance_id', None)
             if instance_id:
                 sessions = result.get(instance_id, dict())

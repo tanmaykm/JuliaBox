@@ -48,7 +48,7 @@ class JBoxInstanceProps(JBoxDB):
         return self.get_attrib('load', '0.0')
 
     def set_load(self, load):
-        self.set_attrib('load', load)
+        self.set_attrib('load', str(load))
 
     def get_accept(self):
         return self.get_attrib('accept', 0) == 1
@@ -71,7 +71,7 @@ class JBoxInstanceProps(JBoxDB):
 
     def get_publish_time(self):
         now = datetime.datetime.now(pytz.utc)
-        self.get_attrib('publish_time', JBoxInstanceProps.datetime_to_epoch_secs(now))
+        return int(self.get_attrib('publish_time', JBoxInstanceProps.datetime_to_epoch_secs(now)))
 
     @staticmethod
     def set_props(instance_id, load=None, accept=None, api_status=None):
@@ -123,6 +123,6 @@ class JBoxInstanceProps(JBoxDB):
         nowsecs = JBoxInstanceProps.datetime_to_epoch_secs(now)
         valid_time = nowsecs - JBoxInstanceProps.SESS_UPDATE_INTERVAL
         result = list()
-        for record in JBoxInstanceProps.scan(publish_time__gte=valid_time, accept__eq=1, load__lt=100):
+        for record in JBoxInstanceProps.scan(publish_time__gte=valid_time, accept__eq=1):
             result.append(record.get('instance_id'))
         return result
