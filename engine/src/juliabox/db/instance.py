@@ -116,3 +116,13 @@ class JBoxInstanceProps(JBoxDB):
             }
             result[iid] = props
         return result
+
+    @staticmethod
+    def get_available_instances():
+        now = datetime.datetime.now(pytz.utc)
+        nowsecs = JBoxInstanceProps.datetime_to_epoch_secs(now)
+        valid_time = nowsecs - JBoxInstanceProps.SESS_UPDATE_INTERVAL
+        result = list()
+        for record in JBoxInstanceProps.scan(publish_time__gte=valid_time, accept__eq=1, load__lt=100):
+            result.append(record.get('instance_id'))
+        return result
